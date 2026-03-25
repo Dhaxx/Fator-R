@@ -1,5 +1,6 @@
 import pyautogui
 import time
+from PIL import ImageGrab
 
 def clicar_imagem(img, tentativas=5, confidence=0.8):
     for i in range(tentativas):
@@ -10,6 +11,10 @@ def clicar_imagem(img, tentativas=5, confidence=0.8):
             return True
         time.sleep(1)
     return False
+
+# Detecta todos os monitores
+screenshot = ImageGrab.grab(all_screens=True)
+screenshot.save('todos_monitores.png')
 
 empresas = input("Digite o(s) código(s) (separados por vírgula): ")
 
@@ -30,11 +35,6 @@ if clicar_imagem("favoritos.png"):
     # segura Ctrl e Shift
     pyautogui.keyDown('ctrl')
     pyautogui.keyDown('shift')
-
-    # pressiona "right" devagar, uma palavra por vez
-    for _ in range(10):  # ajuste para o número de palavras que precisa
-        pyautogui.press('right', interval=0.2)  # intervalo de 0.2s entre cada seta
-    pyautogui.keyUp('shift')
-    pyautogui.keyUp('ctrl')
+    pyautogui.press('right')
 else:
     print("Não encontrou a imagem")
