@@ -1,6 +1,5 @@
 import pyautogui
 import time
-from PIL import ImageGrab
 from pathlib import Path
 import shutil
 import pandas as pd
@@ -21,7 +20,6 @@ def gerar_novos_salarios():
     valores_formatados = [f"{v:.2f}".replace(".", ",") for v in valores]
     return valores_formatados
 
-
 # Cria a pasta "Fator R" na raiz do disco onde este script está
 pasta_raiz_disco = Path(__file__).resolve().anchor
 pasta_fator_r = Path(pasta_raiz_disco) / "Fator R"
@@ -34,10 +32,6 @@ for item in pasta_fator_r.iterdir():
     else:
         item.unlink()
 
-# Detecta todos os monitores
-screenshot = ImageGrab.grab(all_screens=True)
-screenshot.save('todos_monitores.png')
-
 print("===[Variáveis para o Cálculo do Fator R]===")
 empresas = '323,326,327'#input("Digite o(s) código(s) (separados por vírgula): ")
 dt_inicio = '12/2025'#input("Competência inicial (MM/AAAA): ")
@@ -49,7 +43,6 @@ dt_alteracao = '31/12/2026'#input("Data da alteração salarial (DD/MM/AAAA): ")
 # chamada da função
 pyautogui.hotkey('win', 'down')
 time.sleep(1)
-# pyautogui.click(pyautogui.size()[0] // 2, pyautogui.size()[1] // 2)
 pyautogui.hotkey('alt', 'r', 'up')
 # pyautogui.press('up')
 time.sleep(0.5)
@@ -76,16 +69,28 @@ pyautogui.press('tab', presses=3)
 pyautogui.press('enter')
 time.sleep(3)
 pyautogui.press('enter')
-time.sleep(3)
-clicar_imagem("exportar.png")   
+time.sleep(3)  
+
+pos = pyautogui.locateOnScreen("logo.png", confidence=0.5)
+pyautogui.moveTo(pos.left+10, pos.top + 400)
+pyautogui.click()
+
+time.sleep(1)
+
 pyautogui.press('enter')
 pyautogui.press('p')
 time.sleep(1)
-clicar_imagem("export_opt.png", confidence=0.3)
+
+pos = pyautogui.locateOnScreen("salvar_relatorio.png", confidence=0.5)
+pyautogui.moveTo(pos.left + 360, pos.top + 80)
+pyautogui.click()
+pyautogui.press('enter')
+
 time.sleep(2)
 pyautogui.press('tab', presses=4, interval=0.5)
 pyautogui.press('down')
 time.sleep(0.5)
+pyautogui.press('down')
 pyautogui.write(f'Client {pasta_raiz_disco[0]}')
 print(f"Salvando em: Client {pasta_raiz_disco[0]}")
 pyautogui.press('enter')
@@ -111,8 +116,9 @@ pyautogui.press('escape')
 pyautogui.press('escape')
 
 # Inicia segunda etapa do processo Fator R - Alteração Salarial
-clicar_imagem("processos.png")
-pyautogui.press('down', presses=22)
+pyautogui.hotkey('alt', 'p')
+time.sleep(0.5)
+pyautogui.press('up', presses=10)
 pyautogui.press('right')
 pyautogui.press('down')
 pyautogui.press('enter')
