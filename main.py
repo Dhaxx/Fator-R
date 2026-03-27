@@ -72,7 +72,7 @@ pyautogui.press('enter')
 time.sleep(3)  
 
 pos = pyautogui.locateOnScreen("logo.png", confidence=0.5)
-pyautogui.moveTo(pos.left+10, pos.top + 400)
+pyautogui.moveTo(pos.left+10, pos.top + 440)
 pyautogui.click()
 
 time.sleep(1)
