@@ -5,6 +5,29 @@ import shutil
 import pandas as pd
 from PIL import ImageGrab
 from screeninfo import get_monitors
+import sys
+import os
+import ctypes
+
+kernel32 = ctypes.windll.kernel32
+GetConsoleWindow = kernel32.GetConsoleWindow
+SWP_NOZORDER = 0x0004
+SWP_SHOWWINDOW = 0x0040
+SWP_NOSIZE = 0x0001
+SWP_NOMOVE = 0x0002
+SetWindowPos = ctypes.windll.user32.SetWindowPos
+hwnd = GetConsoleWindow()
+SetWindowPos(
+    hwnd, 0, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE | SWP_NOZORDER | SWP_SHOWWINDOW
+)
+kernel32.SetConsoleTitleW("Fator R")
+
+
+def resource_path(relative_path):
+    if hasattr(sys, "_MEIPASS"):
+        return os.path.join(sys._MEIPASS, relative_path)
+    return os.path.join(os.path.dirname(os.path.abspath(__file__)), relative_path)
+
 
 def clicar_imagem(img, tentativas=5, confidence=0.8):
     for i in range(tentativas):
@@ -16,11 +39,17 @@ def clicar_imagem(img, tentativas=5, confidence=0.8):
         time.sleep(1)
     return False
 
+
 def gerar_novos_salarios():
-    df = pd.read_excel(f'{pasta_fator_r}/Fator R - {empresas}.xls', engine='xlrd').sort_values('geempre_nome_emp').reset_index(drop=True)
+    df = (
+        pd.read_excel(f"{pasta_fator_r}/Fator R - {empresas}.xls", engine="xlrd")
+        .sort_values("geempre_nome_emp")
+        .reset_index(drop=True)
+    )
     valores = ((df["valor_faturamento_nfse"] * 0.28) - df["inss_mes_anterior"]).tolist()
     valores_formatados = [f"{v:.2f}".replace(".", ",") for v in valores]
     return valores_formatados
+
 
 def ir_para_lateral_esquerda(img, confidence=0.5, offset_x=10, offset_y=440):
 
@@ -65,6 +94,7 @@ def ir_para_lateral_esquerda(img, confidence=0.5, offset_x=10, offset_y=440):
     pyautogui.moveTo(destino_x, destino_y)
     return True
 
+
 # Cria a pasta "Fator R" na raiz do disco onde este script está
 pasta_raiz_disco = Path(__file__).resolve().anchor
 pasta_fator_r = Path(pasta_raiz_disco) / "Fator R"
@@ -86,129 +116,129 @@ print("===[Variável para a alteração salarial]===")
 dt_alteracao = input("Data da alteração salarial (DD/MM/AAAA): ")
 
 # chamada da função
-pyautogui.hotkey('win', 'down')
+pyautogui.hotkey("win", "down")
 time.sleep(1)
-pyautogui.hotkey('alt', 'r', 'up')
+pyautogui.hotkey("alt", "r", "up")
 # pyautogui.press('up')
 time.sleep(0.5)
-pyautogui.press('enter')
+pyautogui.press("enter")
 time.sleep(2)
-pyautogui.write('Relatórios')
+pyautogui.write("Relatórios")
 time.sleep(2)
-pyautogui.write('Diversos')
-pyautogui.press('enter')
-pyautogui.write('Cálculo Fator R')
-pyautogui.press('enter')
+pyautogui.write("Diversos")
+pyautogui.press("enter")
+pyautogui.write("Cálculo Fator R")
+pyautogui.press("enter")
 time.sleep(2)
 
-pyautogui.press('delete', presses=20)
+pyautogui.press("delete", presses=20)
 pyautogui.write(empresas)
 
-pyautogui.press('tab')
+pyautogui.press("tab")
 pyautogui.write(dt_inicio)
-pyautogui.press('tab')
+pyautogui.press("tab")
 pyautogui.write(dt_fim)
 
-pyautogui.press('tab', presses=3)
-pyautogui.press('enter')
+pyautogui.press("tab", presses=3)
+pyautogui.press("enter")
 time.sleep(2)
-pyautogui.press('enter')
-time.sleep(2)  
+pyautogui.press("enter")
+time.sleep(2)
 
-ir_para_lateral_esquerda("logo.png", confidence=0.5)
+ir_para_lateral_esquerda(resource_path("logo.png"), confidence=0.5)
 pyautogui.click()
 time.sleep(1)
 
-pyautogui.press('enter')
-pyautogui.press('p')
+pyautogui.press("enter")
+pyautogui.press("p")
 time.sleep(1)
 
-pos = pyautogui.locateOnScreen("salvar_relatorio.png", confidence=0.5)
+pos = pyautogui.locateOnScreen(resource_path("salvar_relatorio.png"), confidence=0.5)
 pyautogui.moveTo(pos.left + 360, pos.top + 80)
 pyautogui.click()
-pyautogui.press('enter')
+pyautogui.press("enter")
 
 time.sleep(2)
-pyautogui.press('tab', presses=4, interval=0.5)
-pyautogui.press('down')
+pyautogui.press("tab", presses=4, interval=0.5)
+pyautogui.press("down")
 time.sleep(0.5)
-pyautogui.press('down')
-pyautogui.write(f'Client {pasta_raiz_disco[0]}')
+pyautogui.press("down")
+pyautogui.write(f"Client {pasta_raiz_disco[0]}")
 print(f"Salvando em: Client {pasta_raiz_disco[0]}")
-pyautogui.press('enter')
+pyautogui.press("enter")
 time.sleep(3)
-pyautogui.press('tab', presses=3)
+pyautogui.press("tab", presses=3)
 time.sleep(0.2)
-pyautogui.write('Fator R')
-pyautogui.press('enter')
+pyautogui.write("Fator R")
+pyautogui.press("enter")
 time.sleep(1)
-pyautogui.press('tab', presses=2, interval=0.5)
-pyautogui.write(f'Fator R - {empresas}.xls')
-pyautogui.press('tab', presses=2)
-pyautogui.press('enter')
+pyautogui.press("tab", presses=2, interval=0.5)
+pyautogui.write(f"Fator R - {empresas}.xls")
+pyautogui.press("tab", presses=2)
+pyautogui.press("enter")
 time.sleep(2)
-pyautogui.hotkey('shift', 'tab')
-pyautogui.hotkey('shift', 'tab')
-pyautogui.press('p')
-pyautogui.press('tab')
+pyautogui.hotkey("shift", "tab")
+pyautogui.hotkey("shift", "tab")
+pyautogui.press("p")
+pyautogui.press("tab")
 time.sleep(0.2)
-pyautogui.press('enter')
+pyautogui.press("enter")
 time.sleep(3)
-pyautogui.press('escape')
-pyautogui.press('escape')
+pyautogui.press("escape")
+pyautogui.press("escape")
 
 # Inicia segunda etapa do processo Fator R - Alteração Salarial
-pyautogui.hotkey('alt', 'p')
+pyautogui.hotkey("alt", "p")
 time.sleep(0.5)
-pyautogui.press('up', presses=10)
-pyautogui.press('right')
-pyautogui.press('down')
-pyautogui.press('enter')
+pyautogui.press("up", presses=10)
+pyautogui.press("right")
+pyautogui.press("down")
+pyautogui.press("enter")
 
 pyautogui.write(dt_alteracao)
-pyautogui.press('tab')
-pyautogui.write('ALTERACAO')
-pyautogui.press('tab', presses=2)
-pyautogui.press('down')
+pyautogui.press("tab")
+pyautogui.write("ALTERACAO")
+pyautogui.press("tab", presses=2)
+pyautogui.press("down")
 time.sleep(1)
 
 for i in range(6):
-    pyautogui.hotkey('shift', 'tab')
-    time.sleep(0.1) # Aguarda 100ms entre cada tab
+    pyautogui.hotkey("shift", "tab")
+    time.sleep(0.1)  # Aguarda 100ms entre cada tab
 time.sleep(0.1)
-pyautogui.press('enter')                                
+pyautogui.press("enter")
 
 time.sleep(2)
 
-pyautogui.press('tab', presses=6, interval=0.1)
-pyautogui.press('enter')
+pyautogui.press("tab", presses=6, interval=0.1)
+pyautogui.press("enter")
 time.sleep(2)
-pyautogui.press('tab', presses=6, interval=0.1)
+pyautogui.press("tab", presses=6, interval=0.1)
 
-for empresa in empresas.split(','):
+for empresa in empresas.split(","):
     pyautogui.write(empresa.strip())
-    pyautogui.press('tab', presses=8)
-    pyautogui.hotkey('shift','space')
+    pyautogui.press("tab", presses=8)
+    pyautogui.hotkey("shift", "space")
 
     for i in range(8):
-        pyautogui.hotkey('shift', 'tab')
-        time.sleep(0.1) # Aguarda 100ms entre cada tab
+        pyautogui.hotkey("shift", "tab")
+        time.sleep(0.1)  # Aguarda 100ms entre cada tab
 
-    pyautogui.press('backspace', presses=20)
+    pyautogui.press("backspace", presses=20)
 
-pyautogui.press('tab')
-pyautogui.press('enter')
+pyautogui.press("tab")
+pyautogui.press("enter")
 
 for i in range(2):
-    pyautogui.hotkey('shift', 'tab')
-    time.sleep(0.1) # Aguarda 100ms entre cada tab
+    pyautogui.hotkey("shift", "tab")
+    time.sleep(0.1)  # Aguarda 100ms entre cada tab
 
-pyautogui.press('enter')
-pyautogui.press('enter')
-time.sleep(2)
+pyautogui.press("enter")
+pyautogui.press("enter")
+time.sleep(5)
 
 valores = gerar_novos_salarios()
 
 for valor in valores:
     pyautogui.write(str(valor))
-    pyautogui.press('tab')
+    pyautogui.press("tab")
